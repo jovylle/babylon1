@@ -78,6 +78,25 @@ const createScene = () => {
     advancedTexture.addControl(resumeText);
   }));
 
+  // Day-night cycle variables
+  let dayCycle = 0;
+  const maxIntensity = 1.5;
+  const minIntensity = 0.2;
+
+  // Register a function to run at every frame
+  scene.registerBeforeRender(() => {
+    // Calculate intensity based on day cycle
+    const intensity = minIntensity + (maxIntensity - minIntensity) * Math.abs(Math.sin(dayCycle));
+    light.intensity = intensity;
+
+    // Change ambient color based on day cycle
+    const ambientColor = new BABYLON.Color3(intensity, intensity, intensity);
+    scene.ambientColor = ambientColor;
+
+    // Increase day cycle for next frame
+    dayCycle += 0.005;
+  });
+
   return scene;
 };
 
