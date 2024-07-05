@@ -15,6 +15,12 @@ const createScene = () => {
   // Add a light to the scene
   const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
 
+  // Add ambient sound
+  const ambientSound = new BABYLON.Sound("ambientSound", "https://www.babylonjs-playground.com/sounds/forest-ambient.wav", scene, null, { loop: true, autoplay: true });
+
+  // Add background music
+  const backgroundMusic = new BABYLON.Sound("backgroundMusic", "https://www.babylonjs-playground.com/sounds/song.mp3", scene, null, { loop: true, autoplay: true });
+
   // Add a basic box to the scene
   const box = BABYLON.MeshBuilder.CreateBox("box", {}, scene);
   box.position.y = 1;
