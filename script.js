@@ -29,10 +29,47 @@ const createScene = () => {
   book.material = new BABYLON.StandardMaterial("bookMat", scene);
   book.material.diffuseColor = new BABYLON.Color3(0.5, 0.2, 0.2);
 
-  // Add interactivity to the book
+  // Create particle system
+  const particleSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+  particleSystem.particleTexture = new BABYLON.Texture("https://www.babylonjs-playground.com/textures/flare.png", scene);
+  particleSystem.emitter = book; // Emitting particles from the book
+  particleSystem.minEmitBox = new BABYLON.Vector3(-0.1, 0, -0.1); // Minimum emit box
+  particleSystem.maxEmitBox = new BABYLON.Vector3(0.1, 0, 0.1); // Maximum emit box
+
+  // Particle properties
+  particleSystem.color1 = new BABYLON.Color4(1, 0, 0, 1);
+  particleSystem.color2 = new BABYLON.Color4(1, 1, 0, 1);
+  particleSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0);
+  particleSystem.minSize = 0.1;
+  particleSystem.maxSize = 0.5;
+  particleSystem.minLifeTime = 0.3;
+  particleSystem.maxLifeTime = 1.5;
+
+  // Start particle system when hovering over the book
   book.actionManager = new BABYLON.ActionManager(scene);
-  book.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function (evt) {
-    alert("JavaScript Expert");
+  book.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOverTrigger, function (evt) {
+    particleSystem.start();
+  }));
+
+  // Stop particle system when no longer hovering over the book
+  book.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPointerOutTrigger, function (evt) {
+    particleSystem.stop();
+  }));
+
+  // Add table
+  const table = BABYLON.MeshBuilder.CreateBox("table", { height: 0.5, width: 2, depth: 1 }, scene);
+  table.position = new BABYLON.Vector3(-1, 0.25, 0);
+
+  // Add interactivity to the table
+  table.actionManager = new BABYLON.ActionManager(scene);
+  table.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function (evt) {
+    const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+    const resumeText = new BABYLON.GUI.TextBlock();
+    resumeText.text = "Jovylle Bermudez\nWeb Developer\nExperience: 7 years";
+    resumeText.color = "white";
+    resumeText.fontSize = 24;
+    advancedTexture.addControl(resumeText);
   }));
 
   return scene;
